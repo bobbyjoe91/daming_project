@@ -47,4 +47,4 @@ View(binned)
 
 #test_data
 #train_data
-
+write.csv(binned,file="train(new).csv")
