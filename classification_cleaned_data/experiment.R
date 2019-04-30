@@ -106,24 +106,25 @@ str(binned)
 
 # KLASIFIKASI
 library(rpart)
+library(rpart.plot)
 #library(party)
 #set.seed(1234)
 index <- sample(2, nrow(binned), replace=TRUE, prob=c(0.7,0.3))
 train <- categorized[index==1, ]
 test <- categorized[index==2, ]
 
-model <- price_range ~ blue + dual_sim + four_g + three_g + touch_screen + wifi + battery_power + clock_speed + fc + int_memory + m_dep + mobile_wt + n_cores + pc + px_height + px_width + ram + sc_h + sc_w + talk_time
-phone_ctree <- rpart(model, data=train, control=rpart.control(minsplit=10))
+phone_ctree <- rpart(price_range ~., train)
 #phone_ctree <- ctree(model, data=train)
 
 # cetak model
 print(phone_ctree)
-plot(phone_ctree)
+rpart.plot(phone_ctree, type=3, cex=0.5) #masih hrs diatur lg...
 text(phone_ctree, use.n=TRUE)
 
 # testing
 result <- predict(phone_ctree)
 conf_matrix <- table(colnames(result)[max.col(result,ties.method='first')], train$price_range)
+plot(conf_matrix)
 
 # accuracy
 sum = 0
