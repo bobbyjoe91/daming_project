@@ -1,9 +1,10 @@
 # PEMBACAAN DATA
 setwd("S:/kuliah/daming_project")
 data_set <- read.csv("train.csv", header = TRUE, sep = ",")
+data_test <- read.csv("test.csv", header = TRUE, sep = ",")
 mobile_price <- data.frame(data_set)
 
-View(mobile_price)
+
 
 # PRAPROSES
 price_range <- c(0,1,2,3)
@@ -43,8 +44,28 @@ binned$sc_h <- cut(mobile_price$sc_h, 5, include.lowest = TRUE)
 binned$sc_w <- cut(mobile_price$sc_w, 5, include.lowest = TRUE) # kok ada 0 nya?
 binned$talk_time <- cut(mobile_price$talk_time, 6, include.lowest = TRUE)
 
-View(binned)
+ind <- sample(2, nrow(binned), replace = TRUE, prob = c(0.7, 0.3))
+train_data <- binned[ind == 1, ]
+test_data <- binned[ind == 2, ]
 
-#test_data
-#train_data
-write.csv(binned,file="train(new).csv")
+
+#model new
+set.seed(1234)
+install.packages("rpart")
+install.packages("rpart.plot")
+library(rpart)
+library(rpart.plot)
+
+dataset_rpart <- rpart(price_range ~ . , train_data)
+dataset_rpart
+rpart.plot(dataset_rpart,type = 4)
+
+
+predrpart <- predict(dataset_rpart, type = "class", test_data[, -21])
+table(predrpart, test_data$price_range)
+plot(predrpart)
+
+str(binned)
+str(data_test)
+
+    
