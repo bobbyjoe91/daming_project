@@ -103,3 +103,18 @@ binned$talk_time <- cut(mobile_price$talk_time, 6, include.lowest = TRUE)
 
 View(binned)
 str(binned)
+
+# KLASIFIKASI
+library(rpart)
+#library(party)
+set.seed(1234)
+index <- sample(2, nrow(binned), replace=TRUE, prob=c(0.7,0.3))
+train <- categorized[index==1, ]
+test <- categorized[index==2, ]
+
+model <- price_range ~ blue + dual_sim + four_g + three_g + touch_screen + wifi + battery_power + clock_speed + fc + int_memory + m_dep + mobile_wt + n_cores + pc + px_height + px_width + ram + sc_h + sc_w + talk_time
+phone_ctree <- rpart(model, data=train, control=rpart.control(minsplit=15))
+#phone_ctree <- ctree(model, data=train)
+print(phone_ctree)
+plot(phone_ctree)
+text(phone_ctree, use.n=TRUE)
