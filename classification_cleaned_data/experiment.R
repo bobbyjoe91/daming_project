@@ -41,11 +41,6 @@ par(mfrow=c(1, 2))  # divide graph area in 2 columns
 boxplot(x, main="x", sub=paste("Outlier rows: ", boxplot.stats(x)))
 boxplot(y, main="y", sub=paste("Outlier rows: ", boxplot.stats(y)))
 
-library(e1071)
-par(mfrow=c(1, 2))  # divide graph area in 2 columns
-plot(density(x), main="Density Plot: px_width", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(x), 2)))
-plot(density(y), main="Density Plot: px_height", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(y), 2)))
-
 cor(x, y)
 height_width <- lm(y ~ x)
 print(height_width) # height = 0.522*width + 31.858
@@ -67,13 +62,6 @@ par(mfrow=c(1, 2))  # divide graph area in 2 columns
 boxplot(x, main="x", sub=paste("Outlier rows: ", boxplot.stats(x)))  # box plot for 'speed'
 boxplot(y, main="y", sub=paste("Outlier rows: ", boxplot.stats(y)))
 
-library(e1071)
-par(mfrow=c(1, 2))  # divide graph area in 2 columns
-plot(density(x), main="Density Plot: px_width", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(x), 2)))  # density plot for 'speed'
-polygon(density(x), col="blue")
-plot(density(y), main="Density Plot: px_height", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(y), 2)))  # density plot for 'dist'
-polygon(density(y), col="green")
-
 cor(x, y)
 w_h <- lm(y ~ x)
 print(w_h) # w = 0.5272*h + 1.2627
@@ -81,28 +69,6 @@ print(w_h) # w = 0.5272*h + 1.2627
 less_than_4 <- which(categorized$sc_w < 4)
 categorized$sc_w[less_than_4] = round(0.5272*categorized$sc_h[less_than_4] + 1.2627)
 categorized[less_than_4, 18:19]
-
-# PRAPROSES (lanj.)
-#binning
-library(infotheo)
-binned <- categorized
-binned$battery_power <- cut(mobile_price$battery_power, 15, include.lowest = TRUE)
-binned$clock_speed <- cut(mobile_price$clock_speed, 5, include.lowest = TRUE)
-binned$fc <- cut(mobile_price$fc, 5, include.lowest = TRUE)
-binned$int_memory <- cut(mobile_price$int_memory, 10, include.lowest = TRUE)
-binned$m_dep <- cut(mobile_price$m_dep, 5, include.lowest = TRUE)
-binned$mobile_wt <- cut(mobile_price$mobile_wt, 10, include.lowest = TRUE)
-binned$n_cores <- cut(mobile_price$n_cores, 4, include.lowest = TRUE)
-binned$pc <- cut(mobile_price$pc, 5, include.lowest = TRUE) #
-binned$px_height <- cut(mobile_price$px_height, 5, include.lowest = TRUE) # kok ada 0 nya?
-binned$px_width <- cut(mobile_price$px_width, 10, include.lowest = TRUE)
-binned$ram <- cut(mobile_price$ram, 10, include.lowest = TRUE)
-binned$sc_h <- cut(mobile_price$sc_h, 5, include.lowest = TRUE)
-binned$sc_w <- cut(mobile_price$sc_w, 5, include.lowest = TRUE) # kok ada 0 nya?
-binned$talk_time <- cut(mobile_price$talk_time, 6, include.lowest = TRUE)
-
-View(binned)
-str(binned)
 
 # KLASIFIKASI
 library(rpart)
@@ -125,8 +91,8 @@ text(phone_ctree, use.n=TRUE)
 result <- predict(phone_ctree)
 conf_matrix <- table(colnames(result)[max.col(result,ties.method='first')], train$price_range)
 plot(conf_matrix)
+str(conf_matrix)
 
 # accuracy
-sum = 0
-for (i in 1:4){ sum = sum + conf_matrix[i,i] }
-sum/nrow(result)
+library(caret)
+confusionMatrix(conf_matrix)
