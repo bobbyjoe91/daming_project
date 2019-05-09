@@ -34,15 +34,16 @@ more_than_100 <- which(categorized$px_height >= 100)
 y <- categorized$px_height[more_than_100] # px_height
 x <- categorized$px_width[more_than_100] # px_width
 
-scatter.smooth(x=x, y=y, main="y ~ x")
+scatter.smooth(x=x, y=y, main="px_height ~ px_width")
 
 par(mfrow=c(1, 2))  # divide graph area in 2 columns
 
-boxplot(x, main="x", sub=paste("Outlier rows: ", boxplot.stats(x)))
-boxplot(y, main="y", sub=paste("Outlier rows: ", boxplot.stats(y)))
+boxplot(x, main="px_width")
+boxplot(y, main="px_height")
 
 cor(x, y)
 height_width <- lm(y ~ x)
+
 print(height_width) # height = 0.522*width + 31.858
 
 less_than_100 <- which(mobile_price$px_height < 100)
@@ -55,16 +56,17 @@ more_than_4 <- which(categorized$sc_w >= 4)
 y <- categorized$sc_w[more_than_4]
 x <- categorized$sc_h[more_than_4]
 
-scatter.smooth(x=x, y=y, main="y ~ x")
+par(mfrow=c(1, 1))
+scatter.smooth(x=x, y=y, main="sc_w ~ sc_h")
 
 par(mfrow=c(1, 2))  # divide graph area in 2 columns
 
-boxplot(x, main="x", sub=paste("Outlier rows: ", boxplot.stats(x)))  # box plot for 'speed'
-boxplot(y, main="y", sub=paste("Outlier rows: ", boxplot.stats(y)))
+boxplot(x, main="sc_h")  # box plot for 'speed'
+boxplot(y, main="sc_w")
 
 cor(x, y)
 w_h <- lm(y ~ x)
-print(w_h) # w = 0.5272*h + 1.2627
+print(w_h) # sc_w = 0.5272*sc_h + 1.2627
 
 less_than_4 <- which(categorized$sc_w < 4)
 categorized$sc_w[less_than_4] = round(0.5272*categorized$sc_h[less_than_4] + 1.2627)
